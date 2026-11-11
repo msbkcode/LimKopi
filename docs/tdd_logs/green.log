@@ -1,0 +1,21 @@
+GREEN — after adding: require(found['profileStatus'] == 'Active', ...)  (2026-10-29T12:13:40Z)
+$ python -m unittest test_auth_tdd -v
+test_loginAccountSuspended (test_auth_tdd.LoginTDDTest.test_loginAccountSuspended)
+Suspended account with the correct password -> 403, access denied (Alt flow A2). ... ok
+test_loginProfileSuspended (test_auth_tdd.LoginTDDTest.test_loginProfileSuspended)
+Active account whose User Profile is suspended -> 403 (role template disabled). ... ok
+test_loginSuccess (test_auth_tdd.LoginTDDTest.test_loginSuccess)
+Valid username + password -> 200, session cookie and CSRF token issued, role resolved from profile. ... ok
+test_loginUserNotFound (test_auth_tdd.LoginTDDTest.test_loginUserNotFound)
+Unknown username -> same 401 message as a wrong password (no user enumeration). ... ok
+test_loginWrongPassword (test_auth_tdd.LoginTDDTest.test_loginWrongPassword)
+Correct username, wrong password -> 401 with a generic message and no session. ... ok
+test_passwordStoredAsSaltedPbkdf2 (test_auth_tdd.LoginTDDTest.test_passwordStoredAsSaltedPbkdf2)
+Refactor guard: passwords are never stored in plain text; salts are unique per user. ... ok
+test_suspensionEndsLiveSession (test_auth_tdd.LoginTDDTest.test_suspensionEndsLiveSession)
+Refactor guard: suspending an account revokes sessions that were already open. ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 4.062s
+
+OK

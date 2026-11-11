@@ -1,0 +1,128 @@
+{
+ "version": "idp-feasibility-lr-1.0",
+ "trainedOn": "2026-10-29",
+ "rows": 143,
+ "threshold": 0.5,
+ "categorical": [
+  {
+   "name": "category",
+   "levels": [
+    "Residential",
+    "Commercial",
+    "Hospitality"
+   ]
+  },
+  {
+   "name": "style",
+   "levels": [
+    "Japandi",
+    "Industrial",
+    "Modern",
+    "Minimalist",
+    "Scandinavian",
+    "Contemporary"
+   ]
+  },
+  {
+   "name": "region",
+   "levels": [
+    "Central",
+    "East",
+    "West",
+    "North",
+    "North-East"
+   ]
+  }
+ ],
+ "numeric": [
+  {
+   "name": "floorArea",
+   "mean": 7.239977883291688,
+   "std": 0.4178745987198796,
+   "log": true,
+   "min": 300,
+   "max": 10000
+  },
+  {
+   "name": "budget",
+   "mean": 11.643089083833644,
+   "std": 0.6524980961474154,
+   "log": true,
+   "min": 10000,
+   "max": 2000000
+  },
+  {
+   "name": "durationWeeks",
+   "mean": 15.070175438596491,
+   "std": 5.84705548664951,
+   "log": false,
+   "min": 2,
+   "max": 104
+  },
+  {
+   "name": "budgetPerSqft",
+   "mean": 4.416932063804377,
+   "std": 0.35295181566286316,
+   "log": true,
+   "ratio": [
+    "budget",
+    "floorArea"
+   ],
+   "scale": 1
+  },
+  {
+   "name": "weeksPer1000Sqft",
+   "mean": 10.346409057283182,
+   "std": 2.371369408679041,
+   "log": false,
+   "ratio": [
+    "durationWeeks",
+    "floorArea"
+   ],
+   "scale": 1000
+  }
+ ],
+ "featureNames": [
+  "category Residential",
+  "category Commercial",
+  "category Hospitality",
+  "style Japandi",
+  "style Industrial",
+  "style Modern",
+  "style Minimalist",
+  "style Scandinavian",
+  "style Contemporary",
+  "region Central",
+  "region East",
+  "region West",
+  "region North",
+  "region North-East",
+  "floor area",
+  "budget",
+  "planned duration",
+  "budget per sq ft",
+  "weeks per 1,000 sq ft"
+ ],
+ "intercept": 0.08316433167454906,
+ "coefficients": [
+  2.0742870222975736,
+  -0.22125619589801485,
+  -1.8624384575699446,
+  0.02729274123662964,
+  -0.4328332293798751,
+  -0.5973157031877372,
+  1.0883227601952095,
+  -0.1103406064226421,
+  0.015466406388028842,
+  -0.6459212077309331,
+  0.20428083772053057,
+  0.47811213854842705,
+  -0.21355753322994844,
+  0.16767813352153754,
+  0.029077235793257022,
+  0.45241781902642747,
+  0.351775461996496,
+  0.7662755134341288,
+  0.9401710616349221
+ ]
+}

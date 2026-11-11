@@ -1,0 +1,132 @@
+# Lim Kopi — Continuous Integration + Continuous Delivery
+name: lim-kopi-ci-cd
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------- CI
+  test:
+    name: Build & automated tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Static checks (compile Python, parse every ES module)
+        run: |
+          python -m py_compile server.py predictor.py tests/*.py
+          for f in js/*.js js/*/*.js; do node --check "$f"; done
+          python - <<'PY'
+          import re, pathlib
+          # BCE guard: Boundaries may import only Controls; Controls only Entities/rules.
+          bad = []
+          for f in pathlib.Path("js/boundaries").glob("*.js"):
+              bad += [f"{f}: {m}" for m in re.findall(r"from '(\.\./(?:entities|api)[^']*)'", f.read_text())]
+          for f in pathlib.Path("js/controllers").glob("*.js"):
+              bad += [f"{f}: {m}" for m in re.findall(r"from '(\.\./(?:boundaries|api)[^']*)'", f.read_text())]
+          assert not bad, "BCE layering violated:\n" + "\n".join(bad)
+          print("BCE layering check passed")
+          PY
+
+      - name: Run automated tests (Python API + JS Boundary/Control)
+        env:
+          LIM_KOPI_FAST_SEED: "1"
+        run: python tests/run_all.py
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: tests/results/results.json
+
+  model-quality:
+    name: AI model quality gate
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install training dependencies (dev only — not needed by server.py)
+        run: pip install numpy pandas scikit-learn matplotlib
+      - name: Retrain and evaluate
+        run: python ml/train_feasibility_model.py > /dev/null
+      - name: Fail if the model is worse than the agreed threshold
+        run: |
+          python - <<'PY'
+          import json
+          r = json.load(open("ml/data/training_summary.json"))["results"]["LogisticRegression"]
+          print({k: round(r[k], 3) for k in ("precision", "recall", "f1", "macroF1", "rocAuc", "cvF1")})
+          assert r["cvF1"] >= 0.75 and r["macroF1"] >= 0.70, "Model quality gate failed"
+          PY
+
+  # ---------------------------------------------------------------- CD
+  backend-deliver:
+    name: Package & verify release
+    runs-on: ubuntu-latest
+    needs: [test, model-quality]
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build release package
+        run: bash scripts/package.sh "${GITHUB_SHA::7}"
+      - name: Smoke-test the packaged build
+        run: |
+          mkdir /tmp/release && unzip -q dist/lim-kopi-*.zip -d /tmp/release
+          cd /tmp/release/lim-kopi && (LIM_KOPI_FAST_SEED=1 LIM_KOPI_PORT=8099 python server.py &) && sleep 3
+          curl -fsS http://127.0.0.1:8099/api/health | tee /tmp/health.json
+          grep -q '"schemaVersion": 2' /tmp/health.json
+          curl -fsS http://127.0.0.1:8099/js/app.js > /dev/null
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lim-kopi-release-${{ github.sha }}
+          path: dist/*.zip
+          retention-days: 30
+
+  release:
+    name: Publish GitHub Release (tags only)
+    runs-on: ubuntu-latest
+    needs: backend-deliver
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: lim-kopi-release-${{ github.sha }}
+          path: dist
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          generate_release_notes: true

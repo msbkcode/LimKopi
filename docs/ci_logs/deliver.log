@@ -1,0 +1,16 @@
+== backend-deliver (local reproduction) 2026-10-29T12:10:34Z
+Packaged dist/lim-kopi-5197489.zip (118 files)
+README.md
+RUN_WINDOWS.bat
+VERSION
+index.html
+js
+ml
+predictor.py
+schema.sql
+server.py
+GET /api/health ->
+{"ok": true, "database": "SQLite", "schemaVersion": 2, "model": "idp-feasibility-lr-1.0"}
+GET /js/app.js -> HTTP 200, 41440 bytes
+GET /js/../server.py -> HTTP 404 (path traversal blocked)
+smoke test PASSED

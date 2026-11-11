@@ -1,0 +1,132 @@
+{
+ "cleaning": {
+  "raw_rows": 154,
+  "duplicates_removed": 4,
+  "illogical_removed": 7,
+  "style_imputed": 3,
+  "region_imputed": 2,
+  "clean_rows": 143
+ },
+ "classBalance": {
+  "success": 91,
+  "fail": 52
+ },
+ "split": {
+  "train": 114,
+  "test": 29
+ },
+ "results": {
+  "LogisticRegression": {
+   "precision": 0.8571428571428571,
+   "recall": 1.0,
+   "f1": 0.9230769230769231,
+   "atRiskPrecision": 1.0,
+   "atRiskRecall": 0.7272727272727273,
+   "macroF1": 0.8825910931174089,
+   "accuracy": 0.896551724137931,
+   "rocAuc": 0.9595959595959596,
+   "confusion": [
+    [
+     8,
+     3
+    ],
+    [
+     0,
+     18
+    ]
+   ],
+   "cvF1": 0.8257172712345126,
+   "best": {
+    "C": 1,
+    "class_weight": "None"
+   }
+  },
+  "RandomForest": {
+   "precision": 0.8888888888888888,
+   "recall": 0.8888888888888888,
+   "f1": 0.8888888888888888,
+   "atRiskPrecision": 0.8181818181818182,
+   "atRiskRecall": 0.8181818181818182,
+   "macroF1": 0.8535353535353536,
+   "accuracy": 0.8620689655172413,
+   "rocAuc": 0.9090909090909091,
+   "confusion": [
+    [
+     9,
+     2
+    ],
+    [
+     2,
+     16
+    ]
+   ],
+   "cvF1": 0.8087079706434546,
+   "best": {
+    "class_weight": "balanced",
+    "max_depth": 8,
+    "min_samples_leaf": 1,
+    "n_estimators": 200
+   }
+  },
+  "MajorityBaseline": {
+   "precision": 0.6206896551724138,
+   "recall": 1.0,
+   "f1": 0.7659574468085106,
+   "macroF1": 0.3829787234042553,
+   "accuracy": 0.6206896551724138,
+   "confusion": [
+    [
+     0,
+     11
+    ],
+    [
+     0,
+     18
+    ]
+   ]
+  }
+ },
+ "chosen": "LogisticRegression",
+ "topFeatures": [
+  [
+   "category Residential",
+   2.0742870222975736
+  ],
+  [
+   "category Hospitality",
+   -1.8624384575699446
+  ],
+  [
+   "style Minimalist",
+   1.0883227601952095
+  ],
+  [
+   "weeks per 1,000 sq ft",
+   0.9401710616349221
+  ],
+  [
+   "budget per sq ft",
+   0.7662755134341288
+  ],
+  [
+   "region Central",
+   -0.6459212077309331
+  ],
+  [
+   "style Modern",
+   -0.5973157031877372
+  ],
+  [
+   "region West",
+   0.47811213854842705
+  ],
+  [
+   "budget",
+   0.45241781902642747
+  ],
+  [
+   "style Industrial",
+   -0.4328332293798751
+  ]
+ ]
+}

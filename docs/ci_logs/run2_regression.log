@@ -1,0 +1,24 @@
+commit 1005e59 — refactor: simplify query-string parsing in do_GET
+run at 2026-10-29T12:06:16Z
+
+==> Static checks
+compiled 110 ES modules
+
+==> Automated tests
+FAIL: test_TC_CAT_SEARCH_002 (test_use_cases.UseCaseAcceptanceTest.test_TC_CAT_SEARCH_002)
+AssertionError: 200 not found in (400,) : TC_CAT_SEARCH_002: got HTTP 200: [{'id': 'cat1', 'name': 'Residential', 'description': 'HDB, condominium and landed homes.', 'status': 'Active', 'createdAt': 
+FAIL: test_TC_CIDP_SEARCH_002 (test_use_cases.UseCaseAcceptanceTest.test_TC_CIDP_SEARCH_002)
+AssertionError: 200 not found in (400,) : TC_CIDP_SEARCH_002: got HTTP 200: [{'id': 'idp2', 'ownerId': 'a2', 'title': 'Sage & Stone Café', 'description': 'A neighbourhood café mixing earthy colours,
+FAIL: test_TC_CO_SEARCH_002 (test_use_cases.UseCaseAcceptanceTest.test_TC_CO_SEARCH_002)
+AssertionError: 200 not found in (400,) : TC_CO_SEARCH_002: got HTTP 200: [{'id': 'co1', 'ownerId': 'a2', 'companyName': 'Atelier Living Pte. Ltd.', 'uen': '201912345K', 'address': '10 Tanjong Pagar R
+FAIL: test_TC_CU_SEARCH_SL_002 (test_use_cases.UseCaseAcceptanceTest.test_TC_CU_SEARCH_SL_002)
+AssertionError: 200 not found in (400,) : TC_CU_SEARCH_SL_002: got HTTP 200: [{'id': 'idp3', 'ownerId': 'a5', 'title': 'Harbour View Apartment', 'description': 'A space-efficient condominium apartment
+FAIL: test_TC_PIDP_SEARCH_002 (test_use_cases.UseCaseAcceptanceTest.test_TC_PIDP_SEARCH_002)
+AssertionError: 200 not found in (400,) : TC_PIDP_SEARCH_002: got HTTP 200: [{'id': 'idp1', 'ownerId': 'a2', 'title': 'The Willow Residence', 'description': 'A calm, light-filled 4-room HDB flat with 
+FAIL: test_TC_UP_SEARCH_002 (test_use_cases.UseCaseAcceptanceTest.test_TC_UP_SEARCH_002)
+AssertionError: 200 not found in (400,) : TC_UP_SEARCH_002: got HTTP 200: [{'id': 'up-admin', 'role': 'User Admin', 'description': 'Administers user accounts and user profiles.', 'permissions': ['MANA
+Ran 211 tests in 114.091s
+FAILED (failures=6)
+Tests run: 235, Passed: 229, Failed: 6, Time: 114.3 s
+BUILD FAILURE
+Duration: 119s  (exit 1)

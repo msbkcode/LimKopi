@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<!--
+  LIM KOPI — CSIT314 Interior Design Project (IDP) Platform
+  Presentation shell only. All behaviour lives in ES6 modules organised by BCE layer:
+    js/boundaries/  — forms & views (OnCreate, OnSearch, DisplaySuccess, ...)
+    js/controllers/ — business rules & orchestration (CreateUserProfileC, LoginC, ...)
+    js/entities/    — domain models talking to server.py (UserProfile, IDP, Report, ...)
+    js/app.js       — page rendering + DOM event wiring that instantiates Boundaries
+  Run "python server.py" and open http://127.0.0.1:8000 (do not open as file://).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Lim Kopi | Interior Design Project Platform</title>
+  <style>
+    :root { --paper:#f7f6f2; --white:#fff; --ink:#292b28; --muted:#6b7168; --olive:#5f6b52; --deep:#46523b;
+      --sage:#e8ecdf; --line:#e3e2d8; --red:#9b4b42; --amber:#846a2c; --shadow:0 18px 55px #22220d14; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif; }
+    button,input,select,textarea { font:inherit; }
+    button { cursor:pointer; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    :focus-visible { outline:3px solid #9bb08a; outline-offset:2px; }
+    .hidden { display:none !important; }
+    .eyebrow { color:var(--deep); font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:800; }
+    .muted { color:var(--muted); } .small { font-size:12px; }
+    .brand { display:flex; align-items:center; gap:11px; font-weight:800; font-size:16px; }
+    .mark { display:grid; place-items:center; background:var(--olive); color:#fff; width:38px; height:38px; border-radius:12px; font:22px Georgia,serif; }
+    .btn { border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--ink); padding:10px 14px; font-size:12px; font-weight:750; }
+    .btn:hover { border-color:#9fa890; background:#fafbf8; }
+    .btn.primary { color:#fff; background:var(--olive); border-color:var(--olive); }
+    .btn.primary:hover { background:var(--deep); }
+    .btn.danger { color:var(--red); }
+    .btn.tiny { padding:7px 9px; font-size:11px; }
+    .btn.full { width:100%; padding:13px; }
+    .tag { display:inline-flex; border-radius:100px; padding:4px 9px; font-size:10px; font-weight:800; background:#f0f0e9; color:#666; white-space:nowrap; }
+    .tag.good { background:#e2ede1; color:#3f6a42; } .tag.bad { background:#f6e4e1; color:#8f463e; } .tag.warn { background:#f6edd8; color:var(--amber); }
+    .card { background:#fff; border:1px solid var(--line); border-radius:16px; padding:19px; min-width:0; }
+    .stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:13px; margin-bottom:22px; }
+    .stat { background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px; }
+    .stat strong { display:block; font:30px Georgia,serif; margin:8px 0 4px; }
+    .stat span { color:var(--muted); font-size:12px; }
+    .login { min-height:100vh; display:grid; grid-template-columns:1fr 1fr; }
+    .login-art { padding:45px; display:flex; flex-direction:column; justify-content:space-between; background:linear-gradient(140deg,#e1dfd1,#b6bea5); }
+    .login-art h1 { font:clamp(38px,5vw,64px)/1.06 Georgia,serif; letter-spacing:-.04em; max-width:520px; }
+    .login-form-shell { display:grid; place-items:center; padding:40px; }
+    .login-form { width:min(430px,100%); }
+    .note { background:#f0eee6; padding:13px; border-radius:12px; color:#5f655a; font-size:12px; line-height:1.6; }
+    .field { display:flex; flex-direction:column; gap:6px; margin:13px 0; }
+    .field label { font-size:11px; font-weight:850; text-transform:uppercase; color:#535c4b; }
+    .field input,.field select,.field textarea,.toolbar input { width:100%; background:#fff; border:1px solid #d6d8ce; border-radius:10px; padding:11px; color:var(--ink); }
+    .field textarea { min-height:86px; resize:vertical; }
+    .checks { display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px; }
+    .checks label { display:flex; align-items:center; gap:7px; text-transform:none; font-weight:600; color:var(--ink); font-size:12px; }
+    .checks input { width:auto !important; margin:0; }
+    .hint { font-size:11px; color:var(--muted); }
+    .form-error { min-height:17px; font-size:12px; font-weight:650; color:var(--red); }
+    .tabs { display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#eeeee6; padding:5px; border-radius:12px; margin:18px 0 12px; }
+    .tab { border:0; background:transparent; border-radius:9px; padding:10px; font-weight:750; color:#666d63; }
+    .tab.active { background:#fff; color:var(--deep); box-shadow:0 2px 9px #252b1b12; }
+    .app { min-height:100vh; display:grid; grid-template-columns:240px minmax(0,1fr); }
+    .sidebar { background:#fff; border-right:1px solid var(--line); padding:24px 15px; display:flex; flex-direction:column; gap:22px; }
+    .nav { display:flex; flex-direction:column; gap:4px; }
+    .nav button { border:0; background:transparent; text-align:left; padding:11px 12px; border-radius:10px; color:#5d655a; font-size:13px; font-weight:700; }
+    .nav button:hover,.nav button.active { color:var(--deep); background:var(--sage); }
+    .sidebar-bottom { margin-top:auto; display:grid; gap:8px; border-top:1px solid var(--line); padding-top:15px; }
+    .main { min-width:0; padding:26px clamp(16px,3vw,44px) 46px; }
+    .heading { display:flex; align-items:end; justify-content:space-between; gap:12px; margin:4px 0 22px; flex-wrap:wrap; }
+    .heading h1 { font:clamp(30px,4vw,40px) Georgia,serif; letter-spacing:-.03em; margin:6px 0; }
+    .heading p { color:var(--muted); font-size:13px; margin:0; }
+    .row-actions { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+    .toolbar { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:center; }
+    .toolbar input { width:min(100%,320px); }
+    .banner { padding:10px 12px; border-radius:10px; font-size:12px; margin-bottom:12px; }
+    .banner.info { background:#eef2e7; color:#4c5a40; } .banner.err { background:#f7e7e4; color:#86413a; }
+    .table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:12px; }
+    table { border-collapse:collapse; width:100%; min-width:640px; }
+    th { background:#f9f9f5; color:#70766b; font-size:10px; letter-spacing:.08em; text-transform:uppercase; text-align:left; }
+    th,td { padding:12px; border-bottom:1px solid #ecece5; } td { font-size:12px; vertical-align:middle; }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; }
+    .project { background:#fff; border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+    .project img,.cover { width:100%; height:140px; object-fit:cover; display:block; background:linear-gradient(130deg,#e7dfd2,#b7c4ae); }
+    .project .inside { padding:15px; } .project h3 { font-size:15px; margin:4px 0; } .project p { font-size:12px; color:var(--muted); margin:6px 0; }
+    .info { display:grid; grid-template-columns:140px 1fr; gap:9px 14px; font-size:13px; } .info b { color:#5d6459; font-size:12px; }
+    .photos { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; } .photos img { width:150px; height:96px; object-fit:cover; border-radius:10px; }
+    .empty { background:#fff; border:1px dashed #c9cdc0; padding:34px 16px; text-align:center; border-radius:14px; color:var(--muted); font-size:13px; }
+    .report-forms { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-bottom:16px; }
+    .meter { height:12px; border-radius:20px; background:#ecebe3; overflow:hidden; } .meter i { display:block; height:100%; background:var(--olive); }
+    .modal-layer { position:fixed; inset:0; background:#1d241e80; display:grid; place-items:center; z-index:50; padding:16px; }
+    .modal { background:#fff; border-radius:18px; box-shadow:var(--shadow); width:min(580px,100%); max-height:90vh; overflow:auto; padding:22px; }
+    .modal h2 { font:27px Georgia,serif; margin:0; } .modal .footer { display:flex; justify-content:flex-end; gap:8px; margin-top:18px; }
+    .between { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .toast { position:fixed; right:20px; bottom:20px; background:#30382b; color:#fff; padding:12px 16px; border-radius:10px; font-size:12px; z-index:70; max-width:360px; }
+    .toast.err { background:#7d3a33; }
+    @media (max-width:1050px) { .stats,.report-forms { grid-template-columns:repeat(2,1fr); } .grid { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:760px) { .login,.app { grid-template-columns:1fr; } .login-art { min-height:220px; padding:24px; }
+      .sidebar { padding:12px; gap:8px; } .sidebar-bottom { display:none; } .nav { flex-direction:row; overflow-x:auto; }
+      .grid,.report-forms,.stats { grid-template-columns:1fr; } .info { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <section id="loginScreen" class="login" aria-label="Sign in">
+    <div class="login-art">
+      <div class="brand"><span class="mark">LK</span>lim kopi.</div>
+      <div><div class="eyebrow">SIM-UOW · CSIT314</div><h1>Good spaces.<br>Better connections.</h1>
+        <p>Discover interior design projects, showcase portfolios and run a thoughtful design community.</p></div>
+      <div class="eyebrow">Interior Design Project Platform</div>
+    </div>
+    <div class="login-form-shell"><div class="login-form">
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab active" data-auth="login" role="tab">Log in</button>
+        <button type="button" class="tab" data-auth="register" role="tab">Create account</button>
+      </div>
+      <form id="loginForm" autocomplete="on">
+        <h2 style="font:34px Georgia,serif;margin:8px 0">Welcome back</h2>
+        <div class="field"><label for="loginUsername">Username or email</label>
+          <input id="loginUsername" name="username" autocomplete="username" maxlength="254" required></div>
+        <div class="field"><label for="loginPassword">Password</label>
+          <input id="loginPassword" name="password" type="password" autocomplete="current-password" maxlength="64" required></div>
+        <div class="form-error" id="loginError" role="alert" aria-live="polite"></div>
+        <button class="btn primary full" type="submit">Log in</button>
+        <p class="note" style="margin-top:16px"><b>Demo accounts</b> (password <code>Demo1234!</code>)<br>
+          User Admin <code>shiyuan</code> · Interior Designer <code>yongjun</code>, <code>lwin</code><br>
+          Customer <code>shafiq</code>, <code>bryan</code> · Platform Management <code>shaofeng</code></p>
+      </form>
+      <form id="registerForm" class="hidden" autocomplete="on">
+        <h2 style="font:34px Georgia,serif;margin:8px 0">Create your account</h2>
+        <div class="field"><label for="regUsername">Username</label><input id="regUsername" name="username" autocomplete="username" maxlength="30" required>
+          <span class="hint">3–30 letters, digits, dots, dashes or underscores.</span></div>
+        <div class="field"><label for="regName">Full name</label><input id="regName" name="name" autocomplete="name" maxlength="60"></div>
+        <div class="field"><label for="regEmail">Email</label><input id="regEmail" name="email" type="email" autocomplete="email" maxlength="254" required></div>
+        <div class="field"><label for="regProfile">Register as</label><select id="regProfile" name="profile">
+          <option>Customer</option><option>Interior Designer</option></select></div>
+        <div class="field"><label for="regPassword">Password</label><input id="regPassword" name="password" type="password" autocomplete="new-password" maxlength="64" required>
+          <span class="hint">8–64 characters with uppercase, lowercase, a number and a symbol.</span></div>
+        <div class="field"><label for="regConfirm">Confirm password</label><input id="regConfirm" name="confirmPassword" type="password" autocomplete="new-password" maxlength="64" required></div>
+        <div class="form-error" id="registerError" role="alert" aria-live="polite"></div>
+        <button class="btn primary full" type="submit">Create account</button>
+      </form>
+    </div></div>
+  </section>
+
+  <section id="appScreen" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand"><span class="mark">LK</span>lim kopi.</div>
+      <div class="eyebrow">Workspace</div>
+      <nav class="nav" id="navigation" aria-label="Main navigation"></nav>
+      <div class="sidebar-bottom"><strong id="sideName" class="small"></strong><span id="sideRole" class="small muted"></span>
+        <button id="logoutBtn" class="btn" type="button">Log out</button></div>
+    </aside>
+    <main class="main" id="main"><div id="content"></div></main>
+  </section>
+
+  <div id="modalLayer" class="modal-layer hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal"><div class="between"><h2 id="modalTitle"></h2>
+      <button class="btn tiny" type="button" data-close aria-label="Close dialog">✕</button></div>
+      <div id="modalBody"></div></div>
+  </div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+dist/
+tests/results/
+*.db
+!tests/fixtures/*.db
+ml/data/idp_history.db
+.DS_Store

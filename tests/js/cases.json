@@ -1,0 +1,114 @@
+{
+ "TC_UP_UPDATE_004": {
+  "scenario": "Cancel the update (A3)",
+  "pre": "Update form open for Customer",
+  "steps": "1. Change a field\n2. Click Cancel",
+  "expected": "Form closes; Control is never called; no change saved",
+  "boundary": "UpdateUserProfileForm",
+  "kind": "cancel"
+ },
+ "TC_UA_UPDATE_004": {
+  "scenario": "Cancel the update (A3)",
+  "pre": "Update form open for bryan",
+  "steps": "1. Change a field\n2. Click Cancel",
+  "expected": "Form closes; Control is never called; no change saved",
+  "boundary": "UpdateUserAccountForm",
+  "kind": "cancel"
+ },
+ "TC_CO_UPDATE_004": {
+  "scenario": "Cancel the update (A3)",
+  "pre": "Update form open for Atelier Living",
+  "steps": "1. Change a field\n2. Click Cancel",
+  "expected": "Form closes; Control is never called; no change saved",
+  "boundary": "UpdateCompanyInfoForm",
+  "kind": "cancel"
+ },
+ "TC_CIDP_UPDATE_004": {
+  "scenario": "Cancel the update (A3)",
+  "pre": "Update form open for Sage & Stone Café",
+  "steps": "1. Change a field\n2. Click Cancel",
+  "expected": "Form closes; Control is never called; no change saved",
+  "boundary": "UpdateCurrentIDPForm",
+  "kind": "cancel"
+ },
+ "TC_PIDP_UPDATE_004": {
+  "scenario": "Cancel the update (A3)",
+  "pre": "Update form open for The Willow Residence",
+  "steps": "1. Change a field\n2. Click Cancel",
+  "expected": "Form closes; Control is never called; no change saved",
+  "boundary": "UpdatePastIDPForm",
+  "kind": "cancel"
+ },
+ "TC_CAT_UPDATE_004": {
+  "scenario": "Cancel the update (A3)",
+  "pre": "Update form open for Commercial",
+  "steps": "1. Change a field\n2. Click Cancel",
+  "expected": "Form closes; Control is never called; no change saved",
+  "boundary": "UpdateIDPCategoryForm",
+  "kind": "cancel"
+ },
+ "TC_UP_SUSPEND_004": {
+  "scenario": "Cancel at the confirmation step (A3)",
+  "pre": "Customer profile is Active",
+  "steps": "1. Click Suspend\n2. Click Cancel in the confirmation dialog",
+  "expected": "No request sent; status unchanged; returns false",
+  "boundary": "SuspendUserProfileForm",
+  "kind": "suspendCancel"
+ },
+ "TC_UA_SUSPEND_004": {
+  "scenario": "Cancel at the confirmation step (A3)",
+  "pre": "account 'shafiq' is Active",
+  "steps": "1. Click Suspend\n2. Click Cancel in the confirmation dialog",
+  "expected": "No request sent; status unchanged; returns false",
+  "boundary": "SuspendUserAccountForm",
+  "kind": "suspendCancel"
+ },
+ "TC_CO_SUSPEND_004": {
+  "scenario": "Cancel at the confirmation step (A3)",
+  "pre": "company co1 is Active",
+  "steps": "1. Click Suspend\n2. Click Cancel in the confirmation dialog",
+  "expected": "No request sent; status unchanged; returns false",
+  "boundary": "SuspendCompanyInfoForm",
+  "kind": "suspendCancel"
+ },
+ "TC_CIDP_SUSPEND_004": {
+  "scenario": "Cancel at the confirmation step (A3)",
+  "pre": "IDP idp2 is Active",
+  "steps": "1. Click Suspend\n2. Click Cancel in the confirmation dialog",
+  "expected": "No request sent; status unchanged; returns false",
+  "boundary": "SuspendCurrentIDPForm",
+  "kind": "suspendCancel"
+ },
+ "TC_PIDP_SUSPEND_004": {
+  "scenario": "Cancel at the confirmation step (A3)",
+  "pre": "IDP idp1 is Active",
+  "steps": "1. Click Suspend\n2. Click Cancel in the confirmation dialog",
+  "expected": "No request sent; status unchanged; returns false",
+  "boundary": "SuspendPastIDPForm",
+  "kind": "suspendCancel"
+ },
+ "TC_CAT_SUSPEND_004": {
+  "scenario": "Cancel at the confirmation step (A3)",
+  "pre": "category Hospitality is Active",
+  "steps": "1. Click Suspend\n2. Click Cancel in the confirmation dialog",
+  "expected": "No request sent; status unchanged; returns false",
+  "boundary": "SuspendIDPCategoryForm",
+  "kind": "suspendCancel"
+ },
+ "TC_RPT_DAILY_005": {
+  "scenario": "Boundary chooses the correct display",
+  "pre": "Control returns a report with noData = true",
+  "steps": "1. Click Generate",
+  "expected": "DisplayNoData() is called, not DisplayReport()",
+  "boundary": "GenerateDailyReportForm",
+  "kind": "nodata"
+ },
+ "TC_UA_LOGOUT_004": {
+  "scenario": "Login page shown even when the session had expired (A1)",
+  "pre": "Control.Logout returns false",
+  "steps": "1. Click Logout",
+  "expected": "DisplayLogin() is still called",
+  "boundary": "LogoutForm",
+  "kind": "logout"
+ }
+}
