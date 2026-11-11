@@ -29,10 +29,9 @@ Demo credentials are for local testing only.
 ```
 js/boundaries/   48 Boundary classes  (CreateUserProfileForm, LoginForm, ViewIDPForm, ...)  -> DOM events, Display*()
 js/controllers/  48 Control classes   (CreateUserProfileC, LoginC, SaveFavouriteC, ...)    -> business rules
-js/entities/     UserProfile, UserAccount, CompanyInfo, IDP, Favourite, IDPCategory, Report, Prediction -> REST API
+js/entities/     UserProfile, UserAccount, CompanyInfo, IDP, Favourite, IDPCategory, Report -> REST API
 js/app.js        page rendering + event wiring (instantiates Boundaries)
-server.py        REST API, permission checks, SQLite, static files, AI inference endpoint
-predictor.py     pure-Python inference for ml/feasibility_model.json
+server.py        REST API, permission checks, SQLite, static files
 ```
 
 Class and method names follow the BCE diagrams in `48_User_Stories_V2.pdf`. CI fails the build if a
@@ -41,16 +40,11 @@ Boundary imports an Entity directly or a Control imports a Boundary.
 ## Tests
 
 ```bash
-python tests/run_all.py     # 211 Python tests (API, TDD, migration) + 24 JS Boundary/Control tests -> tests/results/results.json
+python tests/run_all.py     # 215 Python tests (API, TDD, migration) + 27 JS Boundary/Control tests -> tests/results/results.json
 ```
 
-Every Test Case ID in the final report (e.g. `TC_UP_CREATE_001`) is an automated test.
-
-## AI feature
-
-`python ml/train_feasibility_model.py` (dev-only deps: numpy, pandas, scikit-learn, matplotlib) rebuilds the
-150-record simulated dataset, cleans, labels, trains Logistic Regression vs Random Forest, and exports
-`ml/feasibility_model.json`. Endpoint: `POST /api/idps/predict-feasibility`.
+The automated suite includes API, regression, migration and JavaScript Boundary/Control tests.
+Browser-level acceptance scenarios should also be checked in the website and reported separately.
 
 ## Security notes
 

@@ -8,8 +8,8 @@ export class UpdateUserAccountForm {
     this.userAccount = null;
   }
 
-  async OnUpdate(accountId, email, password, profile) {
-    const ok = await this.control.UpdateUserAccount(accountId, email, password, profile);
+  async OnUpdate(accountId, email, password, profile, username = null) {
+    const ok = await this.control.UpdateUserAccount(accountId, email, password, profile, username);
     if (ok) this.DisplaySuccess();
     else this.DisplayError();
     return ok;

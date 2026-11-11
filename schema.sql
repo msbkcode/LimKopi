@@ -78,12 +78,6 @@ CREATE TABLE IF NOT EXISTS reports(
     newIDPs INTEGER NOT NULL, views INTEGER NOT NULL, shortlists INTEGER NOT NULL,
     newAccounts INTEGER NOT NULL, activeIDPs INTEGER NOT NULL, activeCategories INTEGER NOT NULL
 );
-CREATE TABLE IF NOT EXISTS predictions(
-    id TEXT PRIMARY KEY, accountId TEXT NOT NULL REFERENCES accounts(id),
-    inputs TEXT NOT NULL, probability REAL NOT NULL, label INTEGER NOT NULL,
-    modelVersion TEXT NOT NULL, at TEXT NOT NULL,
-    actualOutcome INTEGER
-);
 CREATE TABLE IF NOT EXISTS sessions(
     token_hash TEXT PRIMARY KEY, accountId TEXT NOT NULL REFERENCES accounts(id),
     csrf_token TEXT NOT NULL, expiresAt INTEGER NOT NULL

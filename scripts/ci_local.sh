@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 step() { printf '\n==> %s\n' "$1"; }
 start=$(date +%s)
 step "Static checks"
-python3 -m py_compile server.py predictor.py tests/*.py || exit 1
+python3 -m py_compile server.py tests/*.py || exit 1
 for f in js/*.js js/*/*.js; do node --check "$f" || exit 1; done
 echo "compiled $(ls js/*.js js/*/*.js | wc -l) ES modules"
 step "Automated tests"

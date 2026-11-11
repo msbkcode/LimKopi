@@ -572,32 +572,6 @@ CASES += [
          "yongjun", lambda c, t: c.post("/api/reports", {"reportType": "Monthly", "startDate": "2026-01-01", "endDate": "2026-01-31"}), 403),
 ]
 
-AI = {"category": "Residential", "style": "Scandinavian", "region": "East", "floorArea": 1000, "budget": 80000, "durationWeeks": 12}
-CASES += [
-    # ============================== Sprint 5 — AI feasibility predictor ==============================
-    Case("TC_AI_001", "Predict a well-resourced residential project", "Logged in as Interior Designer; model loaded",
-         "1. Open Feasibility Predictor\n2. Enter Residential, Scandinavian, East, 1000 sq ft, S$80,000, 12 weeks\n3. Click Predict",
-         "probability >= 0.5; label 1; top factors and model version returned", "yongjun",
-         lambda c, t: c.post("/api/idps/predict-feasibility", AI), 200,
-         lambda b, t: b["label"] == 1 and b["probability"] >= 0.5 and len(b["topFactors"]) == 3 and b["modelVersion"].startswith("idp-")),
-    Case("TC_AI_002", "Predict an under-resourced hospitality project", "Logged in as Customer",
-         "1. Enter Hospitality, Industrial, Central, 2500 sq ft, S$150,000, 10 weeks\n2. Click Predict",
-         "label 0 (at risk); risk score > 50", "shafiq",
-         lambda c, t: c.post("/api/idps/predict-feasibility", dict(AI, category="Hospitality", style="Industrial", region="Central",
-                                                                    floorArea=2500, budget=150000, durationWeeks=10)), 200,
-         lambda b, t: b["label"] == 0 and b["riskScore"] > 50),
-    Case("TC_AI_003", "Unknown category value", "Logged in as Interior Designer", "1. Send category=Spaceship", "400 'category must be one of'",
-         "yongjun", lambda c, t: c.post("/api/idps/predict-feasibility", dict(AI, category="Spaceship")), 400),
-    Case("TC_AI_004", "Budget outside the trained range", "Logged in as Interior Designer", "1. Enter budget = 5", "400 'budget must be between'",
-         "yongjun", lambda c, t: c.post("/api/idps/predict-feasibility", dict(AI, budget=5)), 400),
-    Case("TC_AI_005", "Every prediction is logged for monitoring", "Logged in as Customer", "1. Run one prediction",
-         "1 row in predictions with inputs, probability and model version", "shafiq",
-         lambda c, t: c.post("/api/idps/predict-feasibility", AI), 200,
-         lambda b, t: t.db("SELECT COUNT(*) n FROM predictions WHERE accountId='a3'")[0]["n"] == 1),
-    Case("TC_AI_006", "Unauthorized actor", "Logged in as Platform Management", "1. Send prediction request", "403", "shaofeng",
-         lambda c, t: c.post("/api/idps/predict-feasibility", AI), 403),
-]
-
 
 def _wipe_categories(t):
     con = server.connect()

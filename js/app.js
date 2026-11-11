@@ -55,7 +55,6 @@ import { ActivateIDPCategoryForm } from './boundaries/ActivateIDPCategoryForm.js
 import { GenerateDailyReportForm } from './boundaries/GenerateDailyReportForm.js';
 import { GenerateWeeklyReportForm } from './boundaries/GenerateWeeklyReportForm.js';
 import { GenerateMonthlyReportForm } from './boundaries/GenerateMonthlyReportForm.js';
-import { PredictFeasibilityForm } from './boundaries/PredictFeasibilityForm.js';
 import { todaySGT } from './controllers/rules.js';
 
 // ------------------------------------------------------------------ helpers
@@ -66,9 +65,6 @@ const dateStr = (v) => (v ? new Date(v).toLocaleDateString('en-SG') : '—');
 const safeImg = (src) => /^https:\/\//i.test(src || '') || /^data:image\/(png|jpeg|webp);base64,/i.test(src || '');
 const tag = (s) => `<span class="tag ${s === 'Active' || s === 'Past' ? 'good' : s === 'Suspended' ? 'bad' : 'warn'}">${esc(s)}</span>`;
 const btn = (act, label, id = '', cls = '') => `<button type="button" class="btn tiny ${cls}" data-act="${esc(act)}" data-id="${esc(id)}">${label}</button>`;
-const STYLES = ['Japandi', 'Industrial', 'Modern', 'Minimalist', 'Scandinavian', 'Contemporary'];
-const REGIONS = ['Central', 'East', 'West', 'North', 'North-East'];
-const PRED_CATEGORIES = ['Residential', 'Commercial', 'Hospitality'];
 
 const state = { user: null, page: 'Overview', results: null, banner: null, cache: {}, categories: [], profileOptions: [] };
 const can = (perm) => Boolean(state.user?.permissions?.includes(perm));
@@ -120,7 +116,6 @@ function makeView(page) {
     login() { showLogin(); },
     report(r) { showReport(r, false); },
     noData(r) { showReport(r, true); },
-    prediction(r) { showPrediction(r); },
     customerId() { return state.user?.id; },
   };
 }
@@ -148,7 +143,6 @@ const NAV = [
   ['My Shortlist', () => can('MANAGE_FAVOURITES')],
   [IDP_CATEGORIES_LABEL, () => can('MANAGE_CATEGORIES')],
   ['Reports', () => can('GENERATE_REPORTS')],
-  ['Feasibility Predictor', () => can('MANAGE_IDP') || can('BROWSE_IDP')],
 ];
 
 function navigate(page) {
@@ -281,7 +275,7 @@ function formFields(cfg, r) {
   }
   if (k === 'accounts') {
     const options = state.profileOptions.map((p) => [p.id, p.status === 'Active' ? p.role : `${p.role} (Suspended)`, p.status !== 'Active']);
-    return (r ? field('username', 'Username', 'text', r.username, { readonly: true }) : field('username', 'Username', 'text', '', { hint: '3–30 letters, digits, . _ -' })) +
+    return (r ? field('username', 'Username', 'text', r.username) : field('username', 'Username', 'text', '', { hint: '3–30 letters, digits, . _ -' })) +
       field('email', 'Email', 'email', r?.email) + field('profileId', 'User profile', 'select', r?.profileId, { options }) +
       field('password', r ? 'New password (optional)' : 'Password', 'password', '', { required: !r, hint: '8–64 chars, upper, lower, number, symbol' }) +
       field('confirmPassword', 'Confirm password', 'password', '', { required: !r });
@@ -333,7 +327,7 @@ async function openForm(page, cfg, record = null) {
     }
     if (k === 'accounts') {
       if (v('password') !== v('confirmPassword')) { $('formError').textContent = 'Passwords do not match.'; return; }
-      return record ? boundary.OnUpdate(record.id, v('email'), v('password'), v('profileId'))
+      return record ? boundary.OnUpdate(record.id, v('email'), v('password'), v('profileId'), v('username'))
         : boundary.OnCreate(v('username'), v('password'), v('email'), v('profileId'));
     }
     if (k === 'companies') {
@@ -354,7 +348,7 @@ async function openForm(page, cfg, record = null) {
   });
 }
 
-// ------------------------------------------------------------------ detail / count / report / prediction displays
+// ------------------------------------------------------------------ detail / count / report displays
 function showDetail(page, label, r) {
   const skip = new Set(['id', 'ownerId', 'photos', 'password_salt', 'password_hash', 'idpId', 'profileId', 'accountId',
     'companyId', 'categoryId', 'category', 'categoryName', 'lastError', 'lastStatus']);
@@ -395,17 +389,6 @@ function showReport(r, noData) {
       <p class="small muted">Report ID: ${esc(r.id)}</p></div>`;
   toast(noData ? `${r.reportType} report saved (no activity).` : `${r.reportType} report generated.`);
   renderReportHistory();
-}
-
-function showPrediction(r) {
-  const pct = r.probability < 0.01 ? '<1' : r.probability > 0.99 ? '>99' : Math.round(r.probability * 100);
-  $('predictionResult').innerHTML = `<div class="card"><div class="between"><h2 style="font:22px Georgia,serif;margin:0">${esc(r.verdict)}</h2>
-    ${tag(r.label ? 'Active' : 'Suspended').replace(r.label ? 'Active' : 'Suspended', r.label ? 'Low risk' : 'High risk')}</div>
-    <p class="muted">Probability of finishing on budget and on time: <b>${pct}%</b> · risk score ${r.riskScore}/100</p>
-    <div class="meter" aria-label="Success probability ${pct}%"><i style="width:${Math.round(r.probability * 100)}%"></i></div>
-    <h3 style="font-size:13px;margin-top:16px">Main factors</h3><ul class="small">${r.topFactors.map((f) =>
-      `<li>${esc(f.feature)} ${esc(f.effect)} the chance of success</li>`).join('')}</ul>
-    <p class="hint">Model ${esc(r.modelVersion)} · decision support only — not a quotation or guarantee.</p></div>`;
 }
 
 // ------------------------------------------------------------------ page renderers
@@ -561,24 +544,6 @@ async function reports() {
   await renderReportHistory();
 }
 
-async function predictor() {
-  const opt = (list) => list.map((x) => [x, x]);
-  $('content').innerHTML = heading('Feasibility Predictor', 'Estimate whether a planned renovation is likely to finish on budget and on time.') +
-    `<div class="report-forms" style="grid-template-columns:1fr 1fr"><form class="card" id="predictForm">
-      ${field('pCategory', 'Category', 'select', 'Residential', { options: opt(PRED_CATEGORIES) })}
-      ${field('pStyle', 'Style', 'select', 'Japandi', { options: opt(STYLES) })}
-      ${field('pRegion', 'Region', 'select', 'Central', { options: opt(REGIONS) })}
-      ${field('pArea', 'Floor area (sq ft)', 'number', 1000)}${field('pBudget', 'Budget (SGD)', 'number', 60000)}
-      ${field('pWeeks', 'Planned duration (weeks)', 'number', 10)}
-      <button class="btn primary" type="submit">Predict</button></form><div id="predictionResult"><div class="empty">Fill in the project details and press Predict.</div></div></div>`;
-  showBanner();
-  $('predictForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    new PredictFeasibilityForm(makeView('Predictor')).OnPredict($('f_pCategory').value, $('f_pStyle').value, $('f_pRegion').value,
-      $('f_pArea').value, $('f_pBudget').value, $('f_pWeeks').value);
-  });
-}
-
 async function render() {
   if (!state.user) return;
   $('navigation').innerHTML = NAV.filter(([, ok]) => ok()).map(([name]) =>
@@ -586,7 +551,7 @@ async function render() {
   const page = state.page;
   if (['Current IDPs', 'Past IDPs'].includes(page)) await ensurePickers('idps');
   if (RESOURCES[page]) return renderResource(page, RESOURCES[page]);
-  const pages = { Overview: overview, 'IDP Analytics': analytics, 'Explore IDPs': explore, 'My Shortlist': shortlist, Reports: reports, 'Feasibility Predictor': predictor };
+  const pages = { Overview: overview, 'IDP Analytics': analytics, 'Explore IDPs': explore, 'My Shortlist': shortlist, Reports: reports };
   return (pages[page] || overview)();
 }
 

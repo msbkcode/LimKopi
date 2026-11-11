@@ -1,0 +1,101 @@
+﻿username,name,role,email,status,id
+useradmin01,Test User Admin 01,User Admin,useradmin01@limkopi.test,Active,test-useradmin-01
+platformmanger01,Test Platform Manager 01,Platform Management,platformmanger01@limkopi.test,Active,test-platformmanger-01
+platformmanger02,Test Platform Manager 02,Platform Management,platformmanger02@limkopi.test,Active,test-platformmanger-02
+platformmanger03,Test Platform Manager 03,Platform Management,platformmanger03@limkopi.test,Active,test-platformmanger-03
+id01,Test Interior Designer 01,Interior Designer,id01@limkopi.test,Active,test-id-01
+id02,Test Interior Designer 02,Interior Designer,id02@limkopi.test,Active,test-id-02
+id03,Test Interior Designer 03,Interior Designer,id03@limkopi.test,Active,test-id-03
+id04,Test Interior Designer 04,Interior Designer,id04@limkopi.test,Active,test-id-04
+id05,Test Interior Designer 05,Interior Designer,id05@limkopi.test,Active,test-id-05
+id06,Test Interior Designer 06,Interior Designer,id06@limkopi.test,Active,test-id-06
+id07,Test Interior Designer 07,Interior Designer,id07@limkopi.test,Active,test-id-07
+id08,Test Interior Designer 08,Interior Designer,id08@limkopi.test,Active,test-id-08
+id09,Test Interior Designer 09,Interior Designer,id09@limkopi.test,Active,test-id-09
+id10,Test Interior Designer 10,Interior Designer,id10@limkopi.test,Active,test-id-10
+customer01,Test Customer 01,Customer,customer01@limkopi.test,Active,test-customer-01
+customer02,Test Customer 02,Customer,customer02@limkopi.test,Active,test-customer-02
+customer03,Test Customer 03,Customer,customer03@limkopi.test,Active,test-customer-03
+customer04,Test Customer 04,Customer,customer04@limkopi.test,Active,test-customer-04
+customer05,Test Customer 05,Customer,customer05@limkopi.test,Active,test-customer-05
+customer06,Test Customer 06,Customer,customer06@limkopi.test,Active,test-customer-06
+customer07,Test Customer 07,Customer,customer07@limkopi.test,Active,test-customer-07
+customer08,Test Customer 08,Customer,customer08@limkopi.test,Active,test-customer-08
+customer09,Test Customer 09,Customer,customer09@limkopi.test,Active,test-customer-09
+customer10,Test Customer 10,Customer,customer10@limkopi.test,Active,test-customer-10
+customer11,Test Customer 11,Customer,customer11@limkopi.test,Active,test-customer-11
+customer12,Test Customer 12,Customer,customer12@limkopi.test,Active,test-customer-12
+customer13,Test Customer 13,Customer,customer13@limkopi.test,Active,test-customer-13
+customer14,Test Customer 14,Customer,customer14@limkopi.test,Active,test-customer-14
+customer15,Test Customer 15,Customer,customer15@limkopi.test,Active,test-customer-15
+customer16,Test Customer 16,Customer,customer16@limkopi.test,Active,test-customer-16
+customer17,Test Customer 17,Customer,customer17@limkopi.test,Active,test-customer-17
+customer18,Test Customer 18,Customer,customer18@limkopi.test,Active,test-customer-18
+customer19,Test Customer 19,Customer,customer19@limkopi.test,Active,test-customer-19
+customer20,Test Customer 20,Customer,customer20@limkopi.test,Active,test-customer-20
+customer21,Test Customer 21,Customer,customer21@limkopi.test,Active,test-customer-21
+customer22,Test Customer 22,Customer,customer22@limkopi.test,Active,test-customer-22
+customer23,Test Customer 23,Customer,customer23@limkopi.test,Active,test-customer-23
+customer24,Test Customer 24,Customer,customer24@limkopi.test,Active,test-customer-24
+customer25,Test Customer 25,Customer,customer25@limkopi.test,Active,test-customer-25
+customer26,Test Customer 26,Customer,customer26@limkopi.test,Active,test-customer-26
+customer27,Test Customer 27,Customer,customer27@limkopi.test,Active,test-customer-27
+customer28,Test Customer 28,Customer,customer28@limkopi.test,Active,test-customer-28
+customer29,Test Customer 29,Customer,customer29@limkopi.test,Active,test-customer-29
+customer30,Test Customer 30,Customer,customer30@limkopi.test,Active,test-customer-30
+customer31,Test Customer 31,Customer,customer31@limkopi.test,Active,test-customer-31
+customer32,Test Customer 32,Customer,customer32@limkopi.test,Active,test-customer-32
+customer33,Test Customer 33,Customer,customer33@limkopi.test,Active,test-customer-33
+customer34,Test Customer 34,Customer,customer34@limkopi.test,Active,test-customer-34
+customer35,Test Customer 35,Customer,customer35@limkopi.test,Active,test-customer-35
+customer36,Test Customer 36,Customer,customer36@limkopi.test,Active,test-customer-36
+customer37,Test Customer 37,Customer,customer37@limkopi.test,Active,test-customer-37
+customer38,Test Customer 38,Customer,customer38@limkopi.test,Active,test-customer-38
+customer39,Test Customer 39,Customer,customer39@limkopi.test,Active,test-customer-39
+customer40,Test Customer 40,Customer,customer40@limkopi.test,Active,test-customer-40
+customer41,Test Customer 41,Customer,customer41@limkopi.test,Active,test-customer-41
+customer42,Test Customer 42,Customer,customer42@limkopi.test,Active,test-customer-42
+customer43,Test Customer 43,Customer,customer43@limkopi.test,Active,test-customer-43
+customer44,Test Customer 44,Customer,customer44@limkopi.test,Active,test-customer-44
+customer45,Test Customer 45,Customer,customer45@limkopi.test,Active,test-customer-45
+customer46,Test Customer 46,Customer,customer46@limkopi.test,Active,test-customer-46
+customer47,Test Customer 47,Customer,customer47@limkopi.test,Active,test-customer-47
+customer48,Test Customer 48,Customer,customer48@limkopi.test,Active,test-customer-48
+customer49,Test Customer 49,Customer,customer49@limkopi.test,Active,test-customer-49
+customer50,Test Customer 50,Customer,customer50@limkopi.test,Active,test-customer-50
+customer51,Test Customer 51,Customer,customer51@limkopi.test,Active,test-customer-51
+customer52,Test Customer 52,Customer,customer52@limkopi.test,Active,test-customer-52
+customer53,Test Customer 53,Customer,customer53@limkopi.test,Active,test-customer-53
+customer54,Test Customer 54,Customer,customer54@limkopi.test,Active,test-customer-54
+customer55,Test Customer 55,Customer,customer55@limkopi.test,Active,test-customer-55
+customer56,Test Customer 56,Customer,customer56@limkopi.test,Active,test-customer-56
+customer57,Test Customer 57,Customer,customer57@limkopi.test,Active,test-customer-57
+customer58,Test Customer 58,Customer,customer58@limkopi.test,Active,test-customer-58
+customer59,Test Customer 59,Customer,customer59@limkopi.test,Active,test-customer-59
+customer60,Test Customer 60,Customer,customer60@limkopi.test,Active,test-customer-60
+customer61,Test Customer 61,Customer,customer61@limkopi.test,Active,test-customer-61
+customer62,Test Customer 62,Customer,customer62@limkopi.test,Active,test-customer-62
+customer63,Test Customer 63,Customer,customer63@limkopi.test,Active,test-customer-63
+customer64,Test Customer 64,Customer,customer64@limkopi.test,Active,test-customer-64
+customer65,Test Customer 65,Customer,customer65@limkopi.test,Active,test-customer-65
+customer66,Test Customer 66,Customer,customer66@limkopi.test,Active,test-customer-66
+customer67,Test Customer 67,Customer,customer67@limkopi.test,Active,test-customer-67
+customer68,Test Customer 68,Customer,customer68@limkopi.test,Active,test-customer-68
+customer69,Test Customer 69,Customer,customer69@limkopi.test,Active,test-customer-69
+customer70,Test Customer 70,Customer,customer70@limkopi.test,Active,test-customer-70
+customer71,Test Customer 71,Customer,customer71@limkopi.test,Active,test-customer-71
+customer72,Test Customer 72,Customer,customer72@limkopi.test,Active,test-customer-72
+customer73,Test Customer 73,Customer,customer73@limkopi.test,Active,test-customer-73
+customer74,Test Customer 74,Customer,customer74@limkopi.test,Active,test-customer-74
+customer75,Test Customer 75,Customer,customer75@limkopi.test,Active,test-customer-75
+customer76,Test Customer 76,Customer,customer76@limkopi.test,Active,test-customer-76
+customer77,Test Customer 77,Customer,customer77@limkopi.test,Active,test-customer-77
+customer78,Test Customer 78,Customer,customer78@limkopi.test,Active,test-customer-78
+customer79,Test Customer 79,Customer,customer79@limkopi.test,Active,test-customer-79
+customer80,Test Customer 80,Customer,customer80@limkopi.test,Active,test-customer-80
+customer81,Test Customer 81,Customer,customer81@limkopi.test,Active,test-customer-81
+customer82,Test Customer 82,Customer,customer82@limkopi.test,Active,test-customer-82
+customer83,Test Customer 83,Customer,customer83@limkopi.test,Active,test-customer-83
+customer84,Test Customer 84,Customer,customer84@limkopi.test,Active,test-customer-84
+customer85,Test Customer 85,Customer,customer85@limkopi.test,Active,test-customer-85
+customer86,Test Customer 86,Customer,customer86@limkopi.test,Active,test-customer-86

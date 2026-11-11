@@ -38,7 +38,6 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 from xml.sax.saxutils import escape as xml_escape
 
-from predictor import FeasibilityPredictor
 
 BASE = Path(__file__).resolve().parent
 DB_PATH = Path(os.environ.get("LIM_KOPI_DB", BASE / "lim_kopi.db"))
@@ -280,12 +279,6 @@ CREATE TABLE IF NOT EXISTS reports(
     generatedAt TEXT NOT NULL, generatedBy TEXT NOT NULL REFERENCES accounts(id),
     newIDPs INTEGER NOT NULL, views INTEGER NOT NULL, shortlists INTEGER NOT NULL,
     newAccounts INTEGER NOT NULL, activeIDPs INTEGER NOT NULL, activeCategories INTEGER NOT NULL
-);
-CREATE TABLE IF NOT EXISTS predictions(
-    id TEXT PRIMARY KEY, accountId TEXT NOT NULL REFERENCES accounts(id),
-    inputs TEXT NOT NULL, probability REAL NOT NULL, label INTEGER NOT NULL,
-    modelVersion TEXT NOT NULL, at TEXT NOT NULL,
-    actualOutcome INTEGER
 );
 CREATE TABLE IF NOT EXISTS sessions(
     token_hash TEXT PRIMARY KEY, accountId TEXT NOT NULL REFERENCES accounts(id),
@@ -615,6 +608,13 @@ def validate(con, actor, kind, data, old=None, stage=None):
             perms = json.loads(profile["permissions"])
             require("MANAGE_ACCOUNTS" in perms, "You cannot remove account-management rights from your own account.")
         clean = {"email": email, "profileId": profile_id}
+        if old and "username" in data:
+            # US8: User Admin may change an account username; use the same rules as account creation.
+            username = str(data.get("username") or "").strip()
+            require(USERNAME_RE.fullmatch(username), "Username must be 3–30 letters, digits, dots, dashes or underscores.")
+            clash = one(con, "SELECT id FROM accounts WHERE username=? COLLATE NOCASE AND id<>?", (username, old["id"]))
+            require(not clash, "This username is already registered.", 409)
+            clean["username"] = username
         if name:
             require(len(name) <= 60, "Full name must be at most 60 characters.")
             clean["name"] = name
@@ -848,7 +848,6 @@ def build_report_excel(report_rows):
 # --------------------------------------------------------------------------------------
 # SECTION 7 — HTTP HANDLER
 # --------------------------------------------------------------------------------------
-PREDICTOR = FeasibilityPredictor(BASE / "ml" / "feasibility_model.json")
 STATIC_TYPES = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8"}
 
 
@@ -948,8 +947,7 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/favicon.ico":
                 return self.send_bytes(204, b"", "image/x-icon")
             if path == "/api/health":
-                return self.reply({"ok": True, "database": "SQLite", "schemaVersion": SCHEMA_VERSION,
-                                   "model": PREDICTOR.version})
+                return self.reply({"ok": True, "database": "SQLite", "schemaVersion": SCHEMA_VERSION})
             with connect() as con:
                 if path == "/api/session" and not self.session(con):
                     return self.reply({"user": None})          # not signed in (no console 401 noise)
@@ -1073,16 +1071,6 @@ class Handler(BaseHTTPRequestHandler):
                     require(can(a, "GENERATE_REPORTS"), "You do not have permission for this action.", 403)
                     report, empty = build_report(con, a, data)
                     return self.reply({"noData": empty, "report": report}, 200 if empty else 201)
-                if path == "/api/idps/predict-feasibility" and self.command == "POST":
-                    require(can(a, "MANAGE_IDP") or can(a, "BROWSE_IDP"), "You do not have permission for this action.", 403)
-                    try:
-                        result = PREDICTOR.predict(data)
-                    except ValueError as err:
-                        raise ApiError(400, str(err))
-                    insert(con, "predictions", {"id": uid("pred"), "accountId": a["id"], "inputs": json.dumps(result["inputs"]),
-                        "probability": result["probability"], "label": result["label"], "modelVersion": result["modelVersion"],
-                        "at": timestamp()})
-                    return self.reply(result)
                 if len(seg) == 4 and seg[:2] == ["api", "idps"] and self.command == "POST":
                     return self.customer_action(con, a, seg[2], seg[3])
                 if len(seg) >= 3 and seg[:2] == ["api", "records"]:

@@ -30,10 +30,10 @@ export class UserAccount extends EntityBase {
     return this.attempt(async () => (await api('/api/records/accounts')).map(UserAccount.from), []);
   }
 
-  static async UpdateUserAccount(accountId, email, password, profile, name = '') {
+  static async UpdateUserAccount(accountId, email, password, profile, name = '', username = null) {
     return this.attempt(async () => {
       await api(`/api/records/accounts/${q(accountId)}`, {
-        method: 'PUT', body: { email, password, confirmPassword: password, profileId: profile, name },
+        method: 'PUT', body: { email, password, confirmPassword: password, profileId: profile, name, ...(username === null ? {} : { username }) },
       });
       return true;
     }, false);
